@@ -7,17 +7,13 @@ public class Ticket {
     private double totalFee;
     private boolean isPaid;
 
-    // -------------------------------------------------------------------------
-    // Constructor
-    // -------------------------------------------------------------------------
-
     /**
      * Creates a new Ticket for a vehicle assigned to a specific parking spot.
-     *
-     * @param ticketId    unique identifier for this ticket
-     * @param vehicle     the vehicle being parked
-     * @param parkingSpot the spot assigned to the vehicle
-     * @param entryHour   the hour (0–23) the vehicle entered the garage
+     * INCLUDE THESE
+     * unique identifier for this ticket
+     * the vehicle being parked
+     * the spot assigned to the vehicle
+     * the hour (0–23) the vehicle entered the garage
      */
     public Ticket(String ticketId, Vehicle vehicle, ParkingSpot parkingSpot, int entryHour) {
         if (ticketId == null || ticketId.isBlank()) {
@@ -41,6 +37,17 @@ public class Ticket {
         this.totalFee    = 0.0;
         this.isPaid      = false;
     }
+    /**
+     * Getters and Setters
+     */
+    public String getTicketId()         { return ticketId; }
+    public Vehicle getVehicle()         { return vehicle; }
+    public ParkingSpot getParkingSpot() { return parkingSpot; }
+    public int getEntryHour()           { return entryHour; }
+    public int getExitHour()            { return exitHour; }
+    public double getTotalFee()         { return totalFee; }
+    public boolean isPaid()             { return isPaid; }
+
 
     /**
      * Prints a summary of the ticket at the moment of garage entry.
@@ -85,6 +92,58 @@ public class Ticket {
         this.totalFee = vehicle.calculateParkingFee(hoursParked);
         return this.totalFee;
     }
+     /**
+     * Marks the ticket as paid.
+     * Only call if process payment succeeds.
+     */
+    public void markAsPaid() {
+        if (exitHour == -1) {
+            throw new IllegalStateException(
+                    "Cannot mark ticket as paid before calculating the fee (vehicle has not exited).");
+        }
+        this.isPaid = true;
+        System.out.println("Ticket " + ticketId + " has been marked as PAID.");
+    }
 
+    /**
+     * Prints the full details of the ticket, including fee and payment status.
+     */
+    public void displayTicketDetails() {
+        System.out.println("========================================");
+        System.out.println("         PARKING TICKET DETAILS         ");
+        System.out.println("========================================");
+        System.out.println("Ticket ID   : " + ticketId);
+        System.out.printf( "Owner       : %s%n", vehicle.getOwnerName());
+        System.out.printf( "License     : %s%n", vehicle.getLicensePlate());
+        System.out.printf( "Spot        : %s%n", parkingSpot.getSpotLabel());
+        System.out.printf( "Entry Hour  : %d:00%n", entryHour);
+
+        if (exitHour == -1) {
+            System.out.println("Exit Hour   : Still parked");
+            System.out.println("Total Fee   : Not yet calculated");
+        } else {
+            System.out.printf( "Exit Hour   : %d:00%n", exitHour);
+            System.out.printf( "Hours Parked: %d%n", (exitHour - entryHour == 0 ? 1 : exitHour - entryHour));
+            System.out.printf( "Total Fee   : $%.2f%n", totalFee);
+        }
+
+        System.out.println("Payment     : " + (isPaid ? "PAID" : "UNPAID"));
+        System.out.println("========================================");
+    }
+
+
+
+    @Override
+    public String toString() {
+        return "Ticket{" +
+                "ticketId='"    + ticketId                        + '\'' +
+                ", plate='"     + vehicle.getLicensePlate()        + '\'' +
+                ", spot='"      + parkingSpot.getSpotLabel()       + '\'' +
+                ", entry="      + entryHour                        +
+                ", exit="       + (exitHour == -1 ? "N/A" : exitHour) +
+                ", fee=$"       + String.format("%.2f", totalFee)  +
+                ", paid="       + isPaid                           +
+                '}';
+    }
    
 }
