@@ -26,7 +26,7 @@ The system follows Object-Oriented Programming principles:
   - `Car` and `Motorcycle` extend `Vehicle`.
 
 - **Interface**  
-  - `Parkable` defines parking-related behavior and is implemented by `Car` and `Motorcycle`.
+  - `Parkable` defines parking-related behavior and is implemented by `Car`, `PickupTruck`, `ElectricVehicle`and `Motorcycle`.
 
 - **Encapsulation**  
   - All fields are private with getters and setters.
