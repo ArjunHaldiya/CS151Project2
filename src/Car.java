@@ -56,4 +56,22 @@ public class Car extends Vehicle implements Parkable
     }
     return hours * 5.0;
     }
+
+    @Override
+    public void displayVehicleInfo() 
+    {
+        super.displayVehicleInfo();
+        System.out.println("Number of Doors: " + numberOfDoors);
+        System.out.println("Fuel Type: " + fuelType);
+    }
+
+    @Override
+    public String toString() 
+    {
+        return "Car: " + super.toString() +
+               ", Number of Doors: " + numberOfDoors +
+               ", Fuel Type: " + fuelType;
+    }
+
+    
 }
