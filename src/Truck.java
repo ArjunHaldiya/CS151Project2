@@ -23,7 +23,7 @@ public class ParkingGarage {
             System.out.println("Error: garage has reached the maximum of " + MAXIMUM_INSTANCES + " spots.");
             return;
         }
-        for (ParkingSpot s : parkingSpots) { //No duplicates
+        for (ParkingSpot s : parkingSpots) { //No Duplicate
             if (s.getSpotId().equals(spot.getSpotId())) {
                 System.out.println("Error: spot " + spot.getSpotId() + " already exists.");
                 return;
@@ -104,6 +104,7 @@ public class ParkingGarage {
         else System.out.println("Total available: " + count);
     }
 
+    // overall garage status
     public void displayGarageStatus() {
         System.out.println("========================================");
         System.out.println("  GARAGE STATUS: " + garageName);
@@ -128,7 +129,7 @@ public class ParkingGarage {
         }
         return null;
     }
-
+    
     public String getGarageName()                   { return garageName; }
     public ArrayList<ParkingSpot> getParkingSpots() { return parkingSpots; }
     public ArrayList<Ticket> getActiveTickets()     { return activeTickets; }
