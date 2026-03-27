@@ -1,149 +1,143 @@
-public class Ticket {
-    private String ticketId;
-    private Vehicle vehicle;
-    private ParkingSpot parkingSpot;
-    private int entryHour;
-    private int exitHour;
-    private double totalFee;
-    private boolean isPaid;
+import java.util.ArrayList;
 
-    /**
-     * Creates a new Ticket for a vehicle assigned to a specific parking spot.
-     * INCLUDE THESE
-     * unique identifier for this ticket
-     * the vehicle being parked
-     * the spot assigned to the vehicle
-     * the hour (0–23) the vehicle entered the garage
-     */
-    public Ticket(String ticketId, Vehicle vehicle, ParkingSpot parkingSpot, int entryHour) {
-        if (ticketId == null || ticketId.isBlank()) {
-            throw new IllegalArgumentException("Ticket ID cannot be null or blank.");
-        }
-        if (vehicle == null) {
-            throw new IllegalArgumentException("Vehicle cannot be null.");
-        }
-        if (parkingSpot == null) {
-            throw new IllegalArgumentException("Parking spot cannot be null.");
-        }
-        if (entryHour < 0 || entryHour > 23) {
-            throw new IllegalArgumentException("Entry hour must be between 0 and 23.");
-        }
+public class ParkingGarage {
 
-        this.ticketId    = ticketId;
-        this.vehicle     = vehicle;
-        this.parkingSpot = parkingSpot;
-        this.entryHour   = entryHour;
-        this.exitHour    = -1;      // -1 means the vehicle has not exited yet
-        this.totalFee    = 0.0;
-        this.isPaid      = false;
-    }
-    /**
-     * Getters and Setters
-     */
-    public String getTicketId()         { return ticketId; }
-    public Vehicle getVehicle()         { return vehicle; }
-    public ParkingSpot getParkingSpot() { return parkingSpot; }
-    public int getEntryHour()           { return entryHour; }
-    public int getExitHour()            { return exitHour; }
-    public double getTotalFee()         { return totalFee; }
-    public boolean isPaid()             { return isPaid; }
+    public static final int MAXIMUM_INSTANCES = 100;
 
+    private String garageName;
+    private ArrayList<ParkingSpot> parkingSpots;
+    private ArrayList<Ticket> activeTickets;
+    private ArrayList<Vehicle> parkedVehicles;
+    private int ticketCounter;
 
-    /**
-     * Prints a summary of the ticket at the moment of garage entry.
-     * Called right after a ticket is created so the driver has a record.
-     */
-    public void generateTicket() {
-        System.out.println("========================================");
-        System.out.println("         PARKING TICKET ISSUED          ");
-        System.out.println("========================================");
-        System.out.println("Ticket ID   : " + ticketId);
-        System.out.println("Vehicle     : " + vehicle.getLicensePlate()
-                + " (" + vehicle.getOwnerName() + ")");
-        System.out.println("Spot        : " + parkingSpot.getSpotLabel());
-        System.out.println("Entry Hour  : " + entryHour + ":00");
-        System.out.println("Status      : Active - vehicle is parked");
-        System.out.println("========================================");
+    public ParkingGarage(String garageName) {
+        this.garageName = garageName;
+        this.parkingSpots = new ArrayList<>();
+        this.activeTickets = new ArrayList<>();
+        this.parkedVehicles = new ArrayList<>();
+        this.ticketCounter = 1;
     }
 
-    /**
-     * Calculates the total parking fee based on hours parked. (use Parkable interface)
-     * Sets exitHour to the provided value and delegates fee
-     * 
-     */
-    public double calculateParkingFee(int exitHour) {
-        if (exitHour < 0 || exitHour > 23) {
-            throw new IllegalArgumentException("Exit hour must be between 0 and 23.");
+    public void addParkingSpot(ParkingSpot spot) {
+        if (parkingSpots.size() >= MAXIMUM_INSTANCES) {
+            System.out.println("Error: garage has reached the maximum of " + MAXIMUM_INSTANCES + " spots.");
+            return;
         }
-        if (exitHour < entryHour) {
-            throw new IllegalArgumentException(
-                    "Exit hour (" + exitHour + ") cannot be before entry hour (" + entryHour + ").");
+        for (ParkingSpot s : parkingSpots) { //No duplicates
+            if (s.getSpotId().equals(spot.getSpotId())) {
+                System.out.println("Error: spot " + spot.getSpotId() + " already exists.");
+                return;
+            }
         }
-
-        this.exitHour = exitHour;
-        int hoursParked = exitHour - entryHour;
-
-        // Minimum charge of 1 hour so a parking is never free
-        if (hoursParked == 0) {
-            hoursParked = 1;
-        }
-
-        // (Car = $5/hr, Motorcycle = $3/hr) (use calculateParkingFee from Parkable)
-        this.totalFee = vehicle.calculateParkingFee(hoursParked);
-        return this.totalFee;
-    }
-     /**
-     * Marks the ticket as paid.
-     * Only call if process payment succeeds.
-     */
-    public void markAsPaid() {
-        if (exitHour == -1) {
-            throw new IllegalStateException(
-                    "Cannot mark ticket as paid before calculating the fee (vehicle has not exited).");
-        }
-        this.isPaid = true;
-        System.out.println("Ticket " + ticketId + " has been marked as PAID.");
+        parkingSpots.add(spot);
+        System.out.println("Spot " + spot.getSpotLabel() + " added to " + garageName);
     }
 
-    /**
-     * Prints the full details of the ticket, including fee and payment status.
-     */
-    public void displayTicketDetails() {
-        System.out.println("========================================");
-        System.out.println("         PARKING TICKET DETAILS         ");
-        System.out.println("========================================");
-        System.out.println("Ticket ID   : " + ticketId);
-        System.out.printf( "Owner       : %s%n", vehicle.getOwnerName());
-        System.out.printf( "License     : %s%n", vehicle.getLicensePlate());
-        System.out.printf( "Spot        : %s%n", parkingSpot.getSpotLabel());
-        System.out.printf( "Entry Hour  : %d:00%n", entryHour);
+    public ParkingSpot findAvailableSpot() {
+        for (ParkingSpot spot : parkingSpots) {
+            if (spot.checkAvailability()) {
+                return spot;
+            }
+        }
+        return null;
+    }
 
-        if (exitHour == -1) {
-            System.out.println("Exit Hour   : Still parked");
-            System.out.println("Total Fee   : Not yet calculated");
+    public Ticket parkVehicle(Vehicle vehicle, int entryHour) {
+        if (vehicle.isParked()) {
+            System.out.println("Error: " + vehicle.getLicensePlate() + " is already parked.");
+            return null;
+        }
+
+        ParkingSpot spot = findAvailableSpot();
+        if (spot == null) {
+            System.out.println("Error: no available spots.");
+            return null;
+        }
+
+        ((Parkable) vehicle).parkVehicle(spot);
+        vehicle.enterGarage();
+
+        String ticketId = "TKT-" + String.format("%04d", ticketCounter++);
+        Ticket ticket = new Ticket(ticketId, vehicle, spot, entryHour);
+        ticket.generateTicket();
+
+        activeTickets.add(ticket);
+        parkedVehicles.add(vehicle);
+
+        return ticket;
+    }
+
+    public boolean removeVehicle(String ticketId, int exitHour, String paymentMethod) {
+        Ticket ticket = findTicketById(ticketId);
+        if (ticket == null) {
+            System.out.println("Error: ticket " + ticketId + " not found.");
+            return false;
+        }
+
+        double fee = ticket.calculateParkingFee(exitHour);
+
+        PaymentSystem payment = new PaymentSystem("PAY-" + ticketId, paymentMethod, fee);
+        payment.processPayment(ticket, fee);
+
+        ((Parkable) ticket.getVehicle()).leaveSpot(ticket.getParkingSpot());
+        ticket.getVehicle().leaveGarage();
+
+        payment.generateReceipt(ticket);
+
+        activeTickets.remove(ticket);
+        parkedVehicles.remove(ticket.getVehicle());
+
+        System.out.println(ticket.getVehicle().getLicensePlate() + " has exited. Goodbye!");
+        return true;
+    }
+
+    public void displayAvailableSpots() {
+        System.out.println("--- Available Spots in " + garageName + " ---");
+        int count = 0;
+        for (ParkingSpot spot : parkingSpots) {
+            if (spot.checkAvailability()) {
+                spot.displaySpotInfo();
+                count++;
+            }
+        }
+        if (count == 0) System.out.println("No available spots.");
+        else System.out.println("Total available: " + count);
+    }
+
+    public void displayGarageStatus() {
+        System.out.println("========================================");
+        System.out.println("  GARAGE STATUS: " + garageName);
+        System.out.println("========================================");
+        System.out.println("Total Spots  : " + parkingSpots.size());
+        System.out.println("Occupied     : " + parkedVehicles.size());
+        System.out.println("Available    : " + (parkingSpots.size() - parkedVehicles.size()));
+        if (activeTickets.isEmpty()) {
+            System.out.println("No active tickets.");
         } else {
-            System.out.printf( "Exit Hour   : %d:00%n", exitHour);
-            System.out.printf( "Hours Parked: %d%n", (exitHour - entryHour == 0 ? 1 : exitHour - entryHour));
-            System.out.printf( "Total Fee   : $%.2f%n", totalFee);
+            System.out.println("--- Active Tickets ---");
+            for (Ticket t : activeTickets) {
+                System.out.println(t);
+            }
         }
-
-        System.out.println("Payment     : " + (isPaid ? "PAID" : "UNPAID"));
         System.out.println("========================================");
     }
 
+    private Ticket findTicketById(String ticketId) {
+        for (Ticket t : activeTickets) {
+            if (t.getTicketId().equals(ticketId)) return t;
+        }
+        return null;
+    }
 
+    public String getGarageName()                   { return garageName; }
+    public ArrayList<ParkingSpot> getParkingSpots() { return parkingSpots; }
+    public ArrayList<Ticket> getActiveTickets()     { return activeTickets; }
+    public ArrayList<Vehicle> getParkedVehicles()   { return parkedVehicles; }
 
     @Override
     public String toString() {
-        return "Ticket{" +
-                "ticketId='"    + ticketId                        + '\'' +
-                ", plate='"     + vehicle.getLicensePlate()        + '\'' +
-                ", spot='"      + parkingSpot.getSpotLabel()       + '\'' +
-                ", entry="      + entryHour                        +
-                ", exit="       + (exitHour == -1 ? "N/A" : exitHour) +
-                ", fee=$"       + String.format("%.2f", totalFee)  +
-                ", paid="       + isPaid                           +
-                '}';
+        return "ParkingGarage{name=" + garageName + ", total=" + parkingSpots.size()
+                + ", occupied=" + parkedVehicles.size()
+                + ", available=" + (parkingSpots.size() - parkedVehicles.size()) + "}";
     }
-   
 }
