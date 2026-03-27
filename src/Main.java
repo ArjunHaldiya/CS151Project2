@@ -31,85 +31,93 @@ public class Main {
             System.out.println("10. Exit");
             System.out.print("Enter your choice: ");
 
-            String choice = getInput(scanner);
+            int choice = scanner.nextInt();
+            scanner.nextLine();
 
             switch (choice) {
-                case "1":
+                case 1:
                     if (vehicles.size() >= 100) { System.out.println("Max vehicles reached."); break; }
                     System.out.print("Enter vehicle ID: ");
-                    String carId = getInput(scanner);
+                    String carId = scanner.nextLine();
                     System.out.print("Enter license plate: ");
-                    String carPlate = getInput(scanner);
+                    String carPlate = scanner.nextLine();
                     System.out.print("Enter owner name: ");
-                    String carOwner = getInput(scanner);
+                    String carOwner = scanner.nextLine();
                     System.out.print("Enter number of doors: ");
-                    int doors = getInt(scanner);
+                    int doors = scanner.nextInt();
+                    scanner.nextLine();
                     System.out.print("Enter fuel type: ");
-                    String fuelType = getInput(scanner);
+                    String fuelType = scanner.nextLine();
                     vehicles.add(new Car(carId, carPlate, carOwner, doors, fuelType));
                     System.out.println("Car added successfully.");
                     break;
 
-                case "2":
+                case 2:
                     if (vehicles.size() >= 100) { System.out.println("Max vehicles reached."); break; }
                     System.out.print("Enter vehicle ID: ");
-                    String bikeId = getInput(scanner);
+                    String bikeId = scanner.nextLine();
                     System.out.print("Enter license plate: ");
-                    String bikePlate = getInput(scanner);
+                    String bikePlate = scanner.nextLine();
                     System.out.print("Enter owner name: ");
-                    String bikeOwner = getInput(scanner);
-                    System.out.print("Enter engine size: ");
-                    int engineSize = getInt(scanner);
+                    String bikeOwner = scanner.nextLine();
+                    System.out.print("Enter engine size (cc): ");
+                    int engineSize = scanner.nextInt();
+                    scanner.nextLine();
                     System.out.print("Has helmet storage (true/false): ");
-                    boolean hasHelmetStorage = Boolean.parseBoolean(getInput(scanner));
+                    boolean hasHelmetStorage = scanner.nextBoolean();
+                    scanner.nextLine();
                     vehicles.add(new Motorcycle(bikeId, bikePlate, bikeOwner, engineSize, hasHelmetStorage));
                     System.out.println("Motorcycle added successfully.");
                     break;
 
-                case "3":
+                case 3:
                     if (vehicles.size() >= 100) { System.out.println("Max vehicles reached."); break; }
                     System.out.print("Enter vehicle ID: ");
-                    String truckId = getInput(scanner);
+                    String truckId = scanner.nextLine();
                     System.out.print("Enter license plate: ");
-                    String truckPlate = getInput(scanner);
+                    String truckPlate = scanner.nextLine();
                     System.out.print("Enter owner name: ");
-                    String truckOwner = getInput(scanner);
+                    String truckOwner = scanner.nextLine();
                     System.out.print("Enter payload capacity (tons): ");
-                    int payload = getInt(scanner);
+                    int payload = scanner.nextInt();
+                    scanner.nextLine();
                     System.out.print("Enter truck type (Pickup/Semi/Flatbed): ");
-                    String truckType = getInput(scanner);
+                    String truckType = scanner.nextLine();
                     System.out.print("Enter number of axles: ");
-                    int axles = getInt(scanner);
+                    int axles = scanner.nextInt();
+                    scanner.nextLine();
                     vehicles.add(new Truck(truckId, truckPlate, truckOwner, payload, truckType, axles));
                     System.out.println("Truck added successfully.");
                     break;
 
-                case "4":
+                case 4:
                     if (vehicles.size() >= 100) { System.out.println("Max vehicles reached."); break; }
                     System.out.print("Enter vehicle ID: ");
-                    String evId = getInput(scanner);
+                    String evId = scanner.nextLine();
                     System.out.print("Enter license plate: ");
-                    String evPlate = getInput(scanner);
+                    String evPlate = scanner.nextLine();
                     System.out.print("Enter owner name: ");
-                    String evOwner = getInput(scanner);
+                    String evOwner = scanner.nextLine();
                     System.out.print("Enter battery level (0-100): ");
-                    int battery = getInt(scanner);
+                    int battery = scanner.nextInt();
+                    scanner.nextLine();
                     System.out.print("Enter range (miles): ");
-                    int range = getInt(scanner);
+                    int range = scanner.nextInt();
+                    scanner.nextLine();
                     System.out.print("Enter charger type (Level 1/Level 2/DC Fast): ");
-                    String chargerType = getInput(scanner);
+                    String chargerType = scanner.nextLine();
                     vehicles.add(new ElectricVehicle(evId, evPlate, evOwner, battery, range, chargerType));
                     System.out.println("Electric Vehicle added successfully.");
                     break;
 
-                case "5":
+                case 5:
                     System.out.println("\nAvailable Spots:");
                     for (ParkingSpot spot : spots) {
                         if (spot.checkAvailability()) spot.displaySpotInfo();
                     }
                     break;
 
-                case "6":
+                case 6:
                     if (vehicles.isEmpty()) { System.out.println("No vehicles available to park."); break; }
 
                     System.out.println("Select a vehicle to park:");
@@ -119,7 +127,9 @@ public class Main {
                     }
 
                     System.out.print("Enter vehicle number: ");
-                    int vehicleIndex = getInt(scanner) - 1;
+                    int vehicleIndex = scanner.nextInt() - 1;
+                    scanner.nextLine();
+
                     if (vehicleIndex < 0 || vehicleIndex >= vehicles.size()) {
                         System.out.println("Invalid selection.");
                         break;
@@ -135,7 +145,9 @@ public class Main {
                     if (availableSpot == null) { System.out.println("No available parking spots."); break; }
 
                     System.out.print("Enter entry hour (0-23): ");
-                    int entryHour = getInt(scanner);
+                    int entryHour = scanner.nextInt();
+                    scanner.nextLine();
+
                     if (entryHour < 0 || entryHour > 23) { System.out.println("Invalid hour."); break; }
 
                     ((Parkable) selectedVehicle).parkVehicle(availableSpot);
@@ -146,7 +158,7 @@ public class Main {
                     ticketCounter++;
                     break;
 
-                case "7":
+                case 7:
                     if (tickets.isEmpty()) { System.out.println("No active tickets found."); break; }
 
                     System.out.println("Select a ticket:");
@@ -155,7 +167,9 @@ public class Main {
                     }
 
                     System.out.print("Enter ticket number: ");
-                    int ticketIndex = getInt(scanner) - 1;
+                    int ticketIndex = scanner.nextInt() - 1;
+                    scanner.nextLine();
+
                     if (ticketIndex < 0 || ticketIndex >= tickets.size()) {
                         System.out.println("Invalid selection.");
                         break;
@@ -163,7 +177,9 @@ public class Main {
 
                     Ticket selectedTicket = tickets.get(ticketIndex);
                     System.out.print("Enter exit hour (0-23): ");
-                    int exitHour = getInt(scanner);
+                    int exitHour = scanner.nextInt();
+                    scanner.nextLine();
+
                     if (exitHour < 0 || exitHour > 23) { System.out.println("Invalid hour."); break; }
 
                     double fee = selectedTicket.calculateParkingFee(exitHour);
@@ -180,7 +196,7 @@ public class Main {
                     }
                     break;
 
-                case "8":
+                case 8:
                     if (tickets.isEmpty()) {
                         System.out.println("No active tickets.");
                     } else {
@@ -188,7 +204,7 @@ public class Main {
                     }
                     break;
 
-                case "9":
+                case 9:
                     int occupied = 0;
                     for (ParkingSpot spot : spots) {
                         if (!spot.checkAvailability()) occupied++;
@@ -200,7 +216,7 @@ public class Main {
                     System.out.println("Active Tickets: " + tickets.size());
                     break;
 
-                case "10":
+                case 10:
                     running = false;
                     System.out.println("Exiting system...");
                     break;
@@ -211,32 +227,5 @@ public class Main {
         }
 
         scanner.close();
-    }
-
-    // Returns input, exits if user types EXIT (extra credit)
-    static String getInput(Scanner scanner) {
-        String input = scanner.nextLine().trim();
-        if (input.equalsIgnoreCase("EXIT")) {
-            System.out.println("Exiting. Have a nice day, Goodbye!");
-            System.exit(0);
-        }
-        return input;
-    }
-
-    // Re-prompts until a valid integer is entered
-    static int getInt(Scanner scanner) {
-        while (true) {
-            String input = scanner.nextLine().trim();
-            if (input.equalsIgnoreCase("EXIT")) {
-                System.out.println("Exiting.Have a nice day, Goodbye!");
-                System.exit(0);
-            }
-            try {
-                return Integer.parseInt(input);
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a number.");
-                System.out.print("Try again: ");
-            }
-        }
     }
 }

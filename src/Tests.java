@@ -12,7 +12,7 @@ public class Tests {
     @BeforeEach
     void setUp() {
         truck  = new PickupTruck("T001", "TRUCK-01", "Arjun", 5, "Pickup", 2);
-        spot   = new ParkingSpot("S01", "A1");
+        spot   = new ParkingSpot("S01");
         ticket = new Ticket("TKT-0001", truck, spot, 8);
         garage = new ParkingGarage("Test Garage");
     }
@@ -53,7 +53,6 @@ public class Tests {
         assertDoesNotThrow(() -> truck.displayVehicleInfo());
     }
 
-    // ── Ticket ──
     @Test void ticket_defaultStateAndPaymentFlow() {
         assertEquals("TKT-0001", ticket.getTicketId());
         assertEquals(-1, ticket.getExitHour());
@@ -76,8 +75,6 @@ public class Tests {
         assertTrue(ticket.toString().contains("TKT-0001"));
     }
 
-    // ── ParkingGarage ──
-
     @Test void garageTest1() {
         assertTrue(garage.getParkingSpots().isEmpty());
         assertTrue(garage.getActiveTickets().isEmpty());
@@ -88,11 +85,10 @@ public class Tests {
         assertEquals(spot, garage.findAvailableSpot());
 
         // duplicate spot ID should be ignored
-        garage.addParkingSpot(new ParkingSpot("S01", "dup"));
+        garage.addParkingSpot(new ParkingSpot("S01"));
         assertEquals(1, garage.getParkingSpots().size());
     }
 
-    // Verifies full park and remove vehicle flow updates all lists correctly
     @Test void garageTest2() {
         garage.addParkingSpot(spot);
 
@@ -109,16 +105,14 @@ public class Tests {
         assertFalse(spot.isOccupied());
     }
 
-    // 101st spot must be rejected
     @Test void garage_100Cap() {
         for (int i = 0; i < 101; i++) {
-            garage.addParkingSpot(new ParkingSpot("SP" + i, "L" + i));
+            garage.addParkingSpot(new ParkingSpot("SP" + i));
         }
         assertEquals(100, ParkingGarage.MAXIMUM_INSTANCES);
         assertTrue(garage.getParkingSpots().size() <= ParkingGarage.MAXIMUM_INSTANCES);
     }
 
-    // Verifies display methods and toString don't throw
     @Test void garage_outputMethods() {
         garage.addParkingSpot(spot);
         garage.parkVehicle(truck, 9);
@@ -127,7 +121,6 @@ public class Tests {
         assertTrue(garage.toString().contains("Test Garage"));
     }
 
-    // ── Parkable
     @Test void parkable_Truck() {
         Parkable p = truck;
 
