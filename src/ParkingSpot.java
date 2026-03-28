@@ -1,41 +1,73 @@
-public class ParkingSpot {
+// Name: Fnu Hasham
+
+public class ParkingSpot 
+{
     private String spotId;
-    private String spotType;
     private Vehicle vehicle;
 
-    public ParkingSpot(String spotId, String spotType) {
+    public ParkingSpot(String spotId) 
+    {
         this.spotId = spotId;
-        this.spotType = spotType;
         this.vehicle = null;
     }
 
-    public boolean isAvailable() {
+    public String getSpotId() 
+    {
+        return spotId;
+    }
+
+    public void setSpotId(String spotId) 
+    {
+        this.spotId = spotId;
+    }
+
+    public Vehicle getVehicle() 
+    {
+        return vehicle;
+    }
+
+    public Vehicle getAssignedVehicle()
+    {
+        return vehicle;
+    }
+
+    public boolean checkAvailability() 
+    {
         return vehicle == null;
     }
 
-    public boolean assignVehicle(Vehicle vehicle) {
-        if (this.vehicle != null) {
-            System.out.println("Spot is already occupied.");
-            return false;
-        }
-
-        this.vehicle = vehicle;
-        System.out.println("Vehicle assigned to spot " + spotId);
-        return true;
+    public boolean isOccupied()
+    {
+        return vehicle != null;
     }
 
-    public void removeVehicle() {
-        if (vehicle == null) {
-            System.out.println("No vehicle to remove.");
-        } else {
-            System.out.println("Vehicle removed from spot " + spotId);
-            vehicle = null;
+    public void assignVehicle(Vehicle vehicle) 
+    {
+        if (this.vehicle == null) 
+        {
+            this.vehicle = vehicle;
         }
     }
 
-    public void displaySpotInfo() {
+    public void removeVehicle() 
+    {
+        this.vehicle = null;
+    }
+
+    public void displaySpotInfo() 
+    {
         System.out.println("Spot ID: " + spotId);
-        System.out.println("Spot Type: " + spotType);
         System.out.println("Occupied: " + (vehicle != null));
+    }
+
+    @Override
+    public String toString() 
+    {
+        return "ParkingSpot{spotId='" + spotId + "', occupied=" + (vehicle != null) + "}";
+    }
+
+    public String getSpotLabel() 
+    {
+        return spotId;
     }
 }
