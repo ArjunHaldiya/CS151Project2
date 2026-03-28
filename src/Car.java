@@ -1,79 +1,50 @@
 //Gunraj
 //car is a type of vehicle
-public class Car extends Vehicle implements Parkable
-{
+// Hasham-made some changes 
+
+public class Car extends Vehicle implements Parkable {
     private int numberOfDoors;
     private String fuelType;
 
-    //constructor would call on the parent class 
-    public Car(String vehicleId, String licensePlate, String ownerName,int numberOfDoors, String fuelType) 
-    {
+    public Car(String vehicleId, String licensePlate, String ownerName, int numberOfDoors, String fuelType) {
         super(vehicleId, licensePlate, ownerName);
         this.numberOfDoors = numberOfDoors;
         this.fuelType = fuelType;
     }
 
-    //getters
-    public int getNumberOfDoors() {
-        return numberOfDoors;
-    }
-
-    public String getFuelType() {
-        return fuelType;
-    }
-
-    // setters
-    public void setNumberOfDoors(int numberOfDoors) {
-        this.numberOfDoors = numberOfDoors;
-    }
-
-    public void setFuelType(String fuelType) {
-        this.fuelType = fuelType;
-    }
-
-
-    //implementing the Parkable methods
+    public int getNumberOfDoors() { return numberOfDoors; }
+    public String getFuelType() { return fuelType; }
+    public void setNumberOfDoors(int numberOfDoors) { this.numberOfDoors = numberOfDoors; }
+    public void setFuelType(String fuelType) { this.fuelType = fuelType; }
 
     @Override
     public void parkVehicle(ParkingSpot spot) {
-    if (spot != null && spot.checkAvailability()) {
         spot.assignVehicle(this);
         setParked(true);
-    }
     }
 
     @Override
     public void leaveSpot(ParkingSpot spot) {
-    if (spot != null) {
         spot.removeVehicle();
         setParked(false);
     }
-    }
-
-   
-    @Override
-    public double calculateParkingFee(int hours) 
-    {
-        int billableHours = Math.max(1, hours);
-        return billableHours * 5.0;
-    }
-    
 
     @Override
-    public void displayVehicleInfo() 
-    {
+    public double calculateParkingFee(int hours) {
+        int billable = Math.max(1, hours);
+        return billable * 5.0;
+    }
+
+    @Override
+    public void displayVehicleInfo() {
         super.displayVehicleInfo();
-        System.out.println("Number of Doors: " + numberOfDoors);
-        System.out.println("Fuel Type: " + fuelType);
+        System.out.println("Doors        : " + numberOfDoors);
+        System.out.println("Fuel Type    : " + fuelType);
     }
 
     @Override
-    public String toString() 
-    {
-        return "Car: " + super.toString() +
-               ", Number of Doors: " + numberOfDoors +
-               ", Fuel Type: " + fuelType;
+    public String toString() {
+        return "Car{id=" + getVehicleId() + ", plate=" + getLicensePlate()
+                + ", doors=" + numberOfDoors + ", fuel=" + fuelType + "}";
     }
-
-    
 }
