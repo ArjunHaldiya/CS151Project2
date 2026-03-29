@@ -1,6 +1,3 @@
-// Name: Fnu Hasham
-//Gunraj - code review and cleanup
-
 import java.util.ArrayList;
 
 public class ParkingGarage 
@@ -43,24 +40,42 @@ public class ParkingGarage
         parkingSpots.add(spot);
     }
 
-    public ParkingSpot findAvailableSpot() 
+    public ParkingSpot findAvailableSpot()
     {
-        for (ParkingSpot spot : parkingSpots) 
+        for (ParkingSpot spot : parkingSpots)
         {
             if (spot.checkAvailability()) return spot;
         }
         return null;
     }
 
-    public Ticket parkVehicle(Vehicle vehicle, int entryHour) 
+    // finds an available spot of a specific type; falls back to any available spot
+    public ParkingSpot findAvailableSpotOfType(String type)
     {
-        if (vehicle.isParked()) 
+        for (ParkingSpot spot : parkingSpots)
+        {
+            if (spot.checkAvailability() && spot.getSpotType().equals(type)) return spot;
+        }
+        return findAvailableSpot(); // fallback to any available spot
+    }
+
+    public Ticket parkVehicle(Vehicle vehicle, int entryHour)
+    {
+        if (vehicle.isParked())
         {
             System.out.println("Error: " + vehicle.getLicensePlate() + " is already parked.");
             return null;
         }
 
-        ParkingSpot spot = findAvailableSpot();
+        // route vehicle to its preferred spot type
+        ParkingSpot spot;
+        if (vehicle instanceof ElectricVehicle)
+            spot = findAvailableSpotOfType("EV");
+        else if (vehicle instanceof PickupTruck)
+            spot = findAvailableSpotOfType("LARGE");
+        else
+            spot = findAvailableSpotOfType("STANDARD");
+
         if (spot == null) {
             System.out.println("Error: no available spots.");
             return null;
@@ -182,8 +197,50 @@ public class ParkingGarage
         return parkedVehicles; 
     }
 
+    public void displayGrid()
+    {
+        final int COLS = 5;
+        System.out.println("========================================");
+        System.out.println("   GARAGE GRID: " + garageName);
+        System.out.println("   [STD] = Standard  [EV] = Electric  [LG] = Large");
+        System.out.println("========================================");
+
+        for (int i = 0; i < parkingSpots.size(); i++)
+        {
+            ParkingSpot spot = parkingSpots.get(i);
+
+            // spot type label
+            String typeTag;
+            switch (spot.getSpotType()) {
+                case "EV":    typeTag = "EV "; break;
+                case "LARGE": typeTag = "LG "; break;
+                default:      typeTag = "STD"; break;
+            }
+
+            // occupancy label
+            String occupant;
+            if (!spot.isOccupied()) {
+                occupant = "----";
+            } else {
+                Vehicle v = spot.getAssignedVehicle();
+                if      (v instanceof ElectricVehicle) occupant = "EV  ";
+                else if (v instanceof PickupTruck)      occupant = "TRCK";
+                else if (v instanceof Motorcycle)       occupant = "MOTO";
+                else                                    occupant = "CAR ";
+            }
+
+            System.out.printf("[%s|%s:%s]", typeTag, spot.getSpotId(), occupant);
+
+            if ((i + 1) % COLS == 0) System.out.println();
+        }
+
+        // newline if last row wasn't full
+        if (parkingSpots.size() % COLS != 0) System.out.println();
+        System.out.println("========================================");
+    }
+
     @Override
-    public String toString() 
+    public String toString()
     {
         return "ParkingGarage{name=" + garageName + ", total=" + parkingSpots.size()
                 + ", occupied=" + parkedVehicles.size()
