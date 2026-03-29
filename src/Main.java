@@ -299,7 +299,9 @@ public class Main {
         }
     }
 
-    public static boolean readBoolean(Scanner scanner, String prompt) {
+    public static boolean readBoolean(Scanner scanner, String prompt) 
+    
+    {
         while (true) {
             System.out.print(prompt);
             String input = scanner.nextLine().trim().toLowerCase();

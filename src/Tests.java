@@ -17,7 +17,6 @@ public class Tests {
         garage = new ParkingGarage("Test Garage");
     }
 
-
     @Test void truck_constructorAndGetters() {
         assertEquals("T001", truck.getVehicleId());
         assertEquals("TRUCK-01", truck.getLicensePlate());
@@ -27,6 +26,7 @@ public class Tests {
         assertEquals(2, truck.getNumberOfAxles());
         assertFalse(truck.isParked());
     }
+
     @Test void truck_parkingFlowAndSetters() {
         assertEquals(32.00, truck.calculateParkingFee(4), 0.001); // $8/hr * 4
         assertEquals(8.00,  truck.calculateParkingFee(0), 0.001); // min 1 hour
