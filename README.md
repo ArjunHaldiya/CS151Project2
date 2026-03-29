@@ -1,64 +1,80 @@
-## PARKING GARAGE MGMT SYSTEM
-
-## Team Members
-- Gunraj Singh
-- Arjun Haldiya
-- Fnu Hasham
-
+# Parking Garage Management System
+CS 151 Spring 2026 — Project 2
 
 ## Overview
-This project simulates a parking garage system where vehicles can enter, park in available spots, receive tickets, and pay fees when exiting.
-
-The system supports different vehicle types such as cars and motorcycles, assigns parking spots dynamically, and calculates parking fees based on vehicle type and duration.
-
-Users interact with the system through a command-line interface.
-
+A Java-based Parking Garage Management System that models vehicles, parking spots, tickets, and payments using object-oriented principles including abstract classes, interfaces, inheritance, and custom exception handling.
 
 ## Design
 
-The system follows Object-Oriented Programming principles:
+### Class Hierarchy
+```
+Vehicle (abstract)
+├── Car          implements Parkable  — $5/hr
+├── Motorcycle   implements Parkable  — $3/hr
+├── PickupTruck  implements Parkable  — $8/hr
+└── ElectricVehicle implements Parkable — $4/hr
 
-### Key Concepts Used
-- **Abstraction**  
-  - `Vehicle` is an abstract class representing shared vehicle properties.
+Parkable (interface)
+├── parkVehicle(ParkingSpot)
+├── leaveSpot(ParkingSpot)
+└── calculateParkingFee(int hours)  — minimum 1 hour billed
+```
 
-- **Inheritance**  
-  - `Car` and `Motorcycle` extend `Vehicle`.
+### Supporting Classes
+- **ParkingSpot** — tracks occupancy, throws `SpotOccupiedException` if already occupied
+- **Ticket** — records entry/exit hours, calculates fee, tracks paid status
+- **PaymentSystem** — processes payments, generates receipts, throws `InvalidPaymentException`
+- **ParkingGarage** — central manager (max 100 spots), throws `VehicleNotFoundException`
 
-- **Interface**  
-  - `Parkable` defines parking-related behavior and is implemented by `Car`, `PickupTruck`, `ElectricVehicle`and `Motorcycle`.
+### Custom Exceptions
+| Exception | Thrown When |
+|---|---|
+| `SpotOccupiedException` | Parking in an already-occupied spot |
+| `InvalidPaymentException` | Processing an invalid or duplicate payment |
+| `VehicleNotFoundException` | Looking up a ticket ID that does not exist |
 
-- **Encapsulation**  
-  - All fields are private with getters and setters.
+## Installation & Compilation
 
-- **Polymorphism**  
-  - `Parkable` allows different vehicle types to calculate parking fees differently.
+### Requirements
+- Java 11+
+- JUnit 5 (for running tests)
 
+### Compile
+```bash
+cd src
+javac *.java
+```
 
-## Classes
+### Run
+```bash
+java Main
+```
 
-### Core Classes
-- Vehicle (abstract)
-- Car
-- Motorcycle
-- ElectricVehicle
-- PickupTruck
-- ParkingSpot
-- Ticket
-- ParkingGarage
-- PaymentSystem
+### Run Tests (with JUnit 5 on classpath)
+```bash
+javac -cp .:junit-platform-console-standalone.jar *.java
+java -cp .:junit-platform-console-standalone.jar org.junit.platform.console.ConsoleLauncher --scan-classpath
+```
 
-### Interface
-- `Parkable`
+## Usage
+The interactive menu supports the following operations:
+1. **Add Car** — enter vehicle details and park immediately
+2. **Add Motorcycle** — enter vehicle details and park immediately
+3. **Add Pickup Truck** — enter vehicle details and park immediately
+4. **Add Electric Vehicle** — enter vehicle details and park immediately
+5. **View Available Spots** — list all unoccupied spots
+6. **Park Vehicle** — see active vehicles in garage
+7. **Calculate Fee and Pay** — select a ticket, enter exit hour and payment method
+8. **View Active Tickets** — display all open tickets
+9. **View Garage Status** — summary of occupancy
+10. **Exit**
 
+> Type `EXIT` at any prompt to quit immediately.
 
-## Features
-- Vehicle entry into garage
-- Parking spot assignment
-- Ticket generation
-- Parking fee calculation
-- Payment processing
-- Vehicle removal from garage
-- View available parking spots
-- View garage status
-- Supports multiple vehicle types (Car, Motorcycle, ElectricVehicle, PickupTruck)
+## Team Contributions
+| Member | Classes |
+|---|---|
+| Arjun Haldiya | `PickupTruck`, `Ticket`, `Tests` |
+| Fnu Hasham | `ParkingGarage`, `PaymentSystem`, `ParkingGarageTest` |
+| Gunraj | `Car`, `Motorcycle`, `ElectricVehicle`, `ParkingSpot`, `Main` |
+| All | `Vehicle` (abstract), `Parkable` (interface), Exception classes |
